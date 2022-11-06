@@ -8,7 +8,7 @@ const localStrategy = require('passport-local').Strategy;
 const bcrypt = require('bcrypt');
 const app = express();
 
-mongoose.connect("mongodb://localhost:27017/LoginUsers", {
+mongoose.connect("mongodb://172.17.0.1:27017/LoginUsers", {
 	useNewUrlParser: true,
 	useUnifiedTopology: true
 });
@@ -70,6 +70,8 @@ passport.use(new localStrategy(function (username, password, done) {
 function isLoggedIn(req, res, next) {
 	if (req.isAuthenticated()) return next();
 	res.redirect('/login');
+	console.log(req.method,res.statusCode,req.url); // added for log
+
 }
 
 function isLoggedOut(req, res, next) {
@@ -81,11 +83,16 @@ function isLoggedOut(req, res, next) {
 app.get('/', isLoggedIn, (req, res) => {
 	res.render("index",{title:"HOME",
 	name: User});
+
+	console.log(req.method,res.statusCode,req.url); // added for log
+
 });
 
 
 app.get('/about', isLoggedIn, (req, res) => {
 	res.render("about", { title: "About" });
+	console.log(req.method,res.statusCode,req.url); // added for log
+
 });
 
 
@@ -96,6 +103,8 @@ app.get('/login', isLoggedOut, (req, res) => {
 	}
 
 	res.render('login', response);
+	console.log(req.method,res.statusCode,req.url); // added for log
+
 });
 
 app.post('/login', passport.authenticate('local', {
@@ -106,34 +115,35 @@ app.post('/login', passport.authenticate('local', {
 app.get('/logout', function (req, res) {
 	req.logout();
 	res.redirect('/');
+	console.log(req.method,res.statusCode,req.url); // added for log
 });
 
 
-// // Setup our admin user
-// app.get('/setup', async (req, res) => {
-// 	const exists = await User.exists({ username: "admin" });
+// Setup our admin user
+app.get('/setup', async (req, res) => {
+	const exists = await User.exists({ username: "admin" });
 
-// 	if (exists) {
-// 		res.redirect('/login');
-// 		return;
-// 	};
+	if (exists) {
+		res.redirect('/login');
+		return;
+	};
 
-// 	bcrypt.genSalt(10, function (err, salt) {
-// 		if (err) return next(err);
-// 		bcrypt.hash("password", salt, function (err, hash) {
-// 			if (err) return next(err);
+	bcrypt.genSalt(10, function (err, salt) {
+		if (err) return next(err);
+		bcrypt.hash("password", salt, function (err, hash) {
+			if (err) return next(err);
 			
-// 			const newAdmin = new User({
-// 				username: "admin",
-// 				password: hash
-// 			});
+			const newAdmin = new User({
+				username: "admin",
+				password: hash
+			});
 
-// 			newAdmin.save();
+			newAdmin.save();
 
-// 			res.redirect('/login');
-// 		});
-// 	});
-// });
+			res.redirect('/login');
+		});
+	});
+});
 
 
 
@@ -145,7 +155,7 @@ app.use(function(req,res){
 
 
 // Server Listening ..
-const port = 4414
+const port = 8000
 app.listen(port, () => {
 	console.log(`Listening on port ${port}`);
 });

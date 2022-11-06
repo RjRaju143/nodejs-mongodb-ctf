@@ -1,0 +1,39 @@
+version: "3.3"
+services:
+  nodeserer:
+    container_name: webapp
+    build:
+        context: ./web
+    ports:
+        - "8000:8000"
+    depends_on:
+        - mongo
+  mongo:
+    container_name: mongodb
+    build:
+        context: ./mongo
+    # image: mongo
+    ports:
+        - "27017:27017"
+
+
+
+
+
+
+
+
+# version: "3.3"
+# services:
+#     nodeserver:
+#         container_name: ultron_nodeapp
+#         build:
+#             context: ./web
+#         ports:
+#             - "127.0.0.1:8000:8000"
+#     nginx:
+#         container_name: ultron_nginx
+#         build:
+#             context: ./nginx
+#         ports:
+#             - "8800:80"
