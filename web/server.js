@@ -31,7 +31,8 @@ app.engine('hbs', hbs({ extname: '.hbs' }));
 app.set('view engine', 'hbs');
 app.use(express.static(__dirname + '/public'));
 app.use(session({
-	secret: "verygoodsecret",
+	//secret: "verygoodsecret",
+	secret: "@#$%^&*jycRSFCDTFVYBU67564",
 	resave: false,
 	saveUninitialized: true
 }));
@@ -84,16 +85,7 @@ app.get('/', isLoggedIn, (req, res) => {
 	res.render("index",{title:"Home",
 	name : req.user['username']});
 	console.log(req.method,res.statusCode,req.url); // added for log
-
 });
-
-
-// app.get('/about', isLoggedIn, (req, res) => {
-// 	res.render("about", { title: "About" });
-// 	console.log(req.method,res.statusCode,req.url); // added for log
-
-// });
-
 
 app.get('/login', isLoggedOut, (req, res) => {
 	const response = {
@@ -111,15 +103,6 @@ app.post('/login', passport.authenticate('local', {
 	failureRedirect: '/login?error=true'
 }));
 
-
-// Orignal
-// app.get('/logout', function (req, res) {
-// 	req.logout();
-// 	res.redirect('/');
-// 	console.log(req.method,res.statusCode,req.url); // added for log
-// });
-
-
 app.get("/logout", (req, res) => {
   req.logout(req.user, err => {
     if(err) return next(err);
@@ -128,31 +111,30 @@ app.get("/logout", (req, res) => {
 });
 
 
-// Setup our admin user
-app.get('/setup', async (req, res) => {
-	const exists = await User.exists({ username: "raju" });
 
-	if (exists) {
-		res.redirect('/login');
-		return;
-	};
 
-	bcrypt.genSalt(10, function (err, salt) {
-		if (err) return next(err);
-		bcrypt.hash("password", salt, function (err, hash) {
-			if (err) return next(err);
+// // Setup our admin user
+// app.get('/setup', async (req, res) => {
+// 	const exists = await User.exists({ username: "raju" });
+// 	if (exists) {
+// 		res.redirect('/login');
+// 		return;
+// 	};
+// 	bcrypt.genSalt(10, function (err, salt) {
+// 		if (err) return next(err);
+// 		bcrypt.hash("password", salt, function (err, hash) {
+// 			if (err) return next(err);
 			
-			const newAdmin = new User({
-				username: "raju",
-				password: hash
-			});
+// 			const newAdmin = new User({
+// 				username: "raju",
+// 				password: hash
+// 			});
+// 			newAdmin.save();
+// 			res.redirect('/login');
+// 		});
+// 	});
+// });
 
-			newAdmin.save();
-
-			res.redirect('/login');
-		});
-	});
-});
 
 
 
@@ -164,7 +146,7 @@ app.use(function(req,res){
 
 
 // Server Listening ..
-const port = 8848
+const port = 4444
 app.listen(port, () => {
 	console.log(`Listening on port ${port}`);
 });
