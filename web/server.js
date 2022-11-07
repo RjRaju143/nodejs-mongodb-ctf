@@ -81,19 +81,18 @@ function isLoggedOut(req, res, next) {
 
 // ROUTES
 app.get('/', isLoggedIn, (req, res) => {
-	res.render("index",{title:"HOME",
-	name: User});
-
+	res.render("index",{title:"Home",
+	name : req.user['username']});
 	console.log(req.method,res.statusCode,req.url); // added for log
 
 });
 
 
-app.get('/about', isLoggedIn, (req, res) => {
-	res.render("about", { title: "About" });
-	console.log(req.method,res.statusCode,req.url); // added for log
+// app.get('/about', isLoggedIn, (req, res) => {
+// 	res.render("about", { title: "About" });
+// 	console.log(req.method,res.statusCode,req.url); // added for log
 
-});
+// });
 
 
 app.get('/login', isLoggedOut, (req, res) => {
@@ -112,16 +111,26 @@ app.post('/login', passport.authenticate('local', {
 	failureRedirect: '/login?error=true'
 }));
 
-app.get('/logout', function (req, res) {
-	req.logout();
-	res.redirect('/');
-	console.log(req.method,res.statusCode,req.url); // added for log
+
+// Orignal
+// app.get('/logout', function (req, res) {
+// 	req.logout();
+// 	res.redirect('/');
+// 	console.log(req.method,res.statusCode,req.url); // added for log
+// });
+
+
+app.get("/logout", (req, res) => {
+  req.logout(req.user, err => {
+    if(err) return next(err);
+    res.redirect("/");
+  });
 });
 
 
 // Setup our admin user
 app.get('/setup', async (req, res) => {
-	const exists = await User.exists({ username: "admin" });
+	const exists = await User.exists({ username: "raju" });
 
 	if (exists) {
 		res.redirect('/login');
@@ -134,7 +143,7 @@ app.get('/setup', async (req, res) => {
 			if (err) return next(err);
 			
 			const newAdmin = new User({
-				username: "admin",
+				username: "raju",
 				password: hash
 			});
 
@@ -155,7 +164,7 @@ app.use(function(req,res){
 
 
 // Server Listening ..
-const port = 8000
+const port = 8848
 app.listen(port, () => {
 	console.log(`Listening on port ${port}`);
 });
