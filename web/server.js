@@ -8,7 +8,12 @@ const localStrategy = require('passport-local').Strategy;
 const bcrypt = require('bcrypt');
 const app = express();
 
-mongoose.connect("mongodb://172.17.0.1:27017/LoginUsers", {
+const path = require('path')
+const fileUpload = require('express-fileupload');
+const serveIndex = require('serve-index');
+const fs = require('fs')
+
+mongoose.connect("mongodb://172.17.0.1:27017/LoginUsers",{
 	useNewUrlParser: true,
 	useUnifiedTopology: true
 });
@@ -87,6 +92,14 @@ app.get('/', isLoggedIn, (req, res) => {
 	console.log(req.method,res.statusCode,req.url); // added for log
 });
 
+
+app.get('/about', isLoggedIn, (req, res) => {
+	res.render("index",{title:"About",
+	name : req.user['username']});
+	console.log(req.method,res.statusCode,req.url); // added for log
+});
+
+
 app.get('/login', isLoggedOut, (req, res) => {
 	const response = {
 		title: "Login",
@@ -110,32 +123,71 @@ app.get("/logout", (req, res) => {
   });
 });
 
+// need to config ....
+app.get('/register', (req, res) => {
+	res.render('register.hbs')
+	console.log(req.method,res.statusCode,req.url); // added for log
+  })
 
 
 
-// // Setup our admin user
-// app.get('/setup', async (req, res) => {
-// 	const exists = await User.exists({ username: "raju" });
-// 	if (exists) {
-// 		res.redirect('/login');
-// 		return;
-// 	};
-// 	bcrypt.genSalt(10, function (err, salt) {
-// 		if (err) return next(err);
-// 		bcrypt.hash("password", salt, function (err, hash) {
-// 			if (err) return next(err);
+// Setup our admin user
+app.get('/setup', async (req, res) => {
+	const exists = await User.exists({ username: "raju" });
+	if (exists) {
+		res.redirect('/login');
+		return;
+	};
+	bcrypt.genSalt(10, function (err, salt) {
+		if (err) return next(err);
+		bcrypt.hash("password", salt, function (err, hash) {
+			if (err) return next(err);
 			
-// 			const newAdmin = new User({
-// 				username: "raju",
-// 				password: hash
-// 			});
-// 			newAdmin.save();
-// 			res.redirect('/login');
-// 		});
-// 	});
-// });
+			const newAdmin = new User({
+				username: "raju",
+				password: hash
+			});
+			newAdmin.save();
+			res.redirect('/login');
+		});
+	});
+});
 
 
+
+
+
+
+
+// need to config some ....
+app.get('/upload', (req, res) => {
+	var directoryPath = path.join(__dirname, 'upload');
+	fs.readdir(directoryPath, function (err, files) {
+	  if (err) {
+		  return console.log('Unable to scan directory: ' + err);
+	  }
+	  res.send(files)
+	  console.log(req.method,res.statusCode,req.url); // added for log
+	  files.forEach(function (file) {
+	  console.log(req.method,res.statusCode,req.url,file); // added for log
+	  });
+	})
+  });
+
+
+
+
+
+
+
+
+
+
+
+//robots
+app.get('/robots.txt',(req,res)=>{
+	res.sendFile(path.join(__dirname, 'robots.txt'));
+  });
 
 
 // 404 Page Not Found

@@ -1,0 +1,11 @@
+#
+User-agent: *
+Allow: /
+Allow: /login
+Allow: /register
+
+#
+User-agent: *
+Disallow: /root
+Disallow: /etc/shadow
+Disallow: /rabbitHole
