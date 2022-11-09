@@ -38,6 +38,7 @@ app.engine('hbs', hbs({ extname: '.hbs' }));
 app.set('view engine', 'hbs');
 
 
+
 app.use(express.static(__dirname + '/public'));
 app.use(session({
 	secret: "@#$%^&*jycRSFCDTFVYBU67564",
@@ -110,16 +111,16 @@ app.get('/about', isLoggedIn, (req, res) => {
 
 
 
-app.get("/bug", function (req, res) {
-  res.render("bug")
-})
+// app.get("/bug", function (req, res) {
+//   res.render("bug")
+// })
 
-app.post("/render", function (req, res) {
-  template = req.body.template || "h1 No template provided"
+// app.post("/render", function (req, res) {
+//   template = req.body.template || "h1 No template provided"
 
-  value = pug.render(template)
-  res.render("render", { value: value })
-})
+//   value = pug.render(template)
+//   res.render("render", { value: value })
+// })
 
 
 
