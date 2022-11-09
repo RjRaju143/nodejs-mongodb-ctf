@@ -36,7 +36,6 @@ app.engine('hbs', hbs({ extname: '.hbs' }));
 app.set('view engine', 'hbs');
 app.use(express.static(__dirname + '/public'));
 app.use(session({
-	//secret: "verygoodsecret",
 	secret: "@#$%^&*jycRSFCDTFVYBU67564",
 	resave: false,
 	saveUninitialized: true
