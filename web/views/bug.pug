@@ -1,0 +1,37 @@
+doctype html
+head
+  title PUG to HTML
+  link(rel='stylesheet' href='https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css')
+  link(rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.60.0/codemirror.min.css')
+nav.navbar.navbar-light.bg-light
+  .container
+    span.navbar-brand.mb-0.h1 PUG to HTML Converter
+.container.pt-4
+  form(action='/render' method='post')
+    .form-group
+      label(for='template') Template
+      textarea#template.form-control(name='template').
+        doctype html
+        head
+          title Pug
+          script.
+            console.log("Pugs are cute")
+        h1 Pug - node template engine
+        #container.col
+          p You are amazing
+          p Pug is a terse and simple templating language.
+
+    button.btn.btn-primary(type='submit') Convert to HTML
+
+script(src='https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.60.0/codemirror.min.js')
+script(src='https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.60.0/mode/pug/pug.js')
+link(rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.60.0/theme/material-darker.min.css')
+
+script.
+  var editor = CodeMirror.fromTextArea(document.getElementById("template"), {
+    mode: {name: "pug", alignCDATA: true},
+    lineNumbers: true,
+    tabSize: 2,
+    theme: "material-darker",
+    autofocus: true 
+  });

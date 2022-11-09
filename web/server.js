@@ -13,6 +13,8 @@ const fileUpload = require('express-fileupload');
 const serveIndex = require('serve-index');
 const fs = require('fs')
 
+const pug = require("pug")
+
 mongoose.connect("mongodb://172.17.0.1:27017/LoginUsers",{
 	useNewUrlParser: true,
 	useUnifiedTopology: true
@@ -34,6 +36,8 @@ const User = mongoose.model('User', UserSchema);
 // Middleware
 app.engine('hbs', hbs({ extname: '.hbs' }));
 app.set('view engine', 'hbs');
+
+
 app.use(express.static(__dirname + '/public'));
 app.use(session({
 	secret: "@#$%^&*jycRSFCDTFVYBU67564",
@@ -76,7 +80,6 @@ function isLoggedIn(req, res, next) {
 	if (req.isAuthenticated()) return next();
 	res.redirect('/login');
 	console.log(req.method,res.statusCode,req.url); // added for log
-
 }
 
 function isLoggedOut(req, res, next) {
@@ -94,6 +97,44 @@ app.get('/', isLoggedIn, (req, res) => {
 
 app.get('/about', isLoggedIn, (req, res) => {
 	res.render("index",{title:"About",
+	name : req.user['username']});
+	console.log(req.method,res.statusCode,req.url); // added for log
+});
+
+
+
+
+
+
+
+
+
+
+app.get("/bug", function (req, res) {
+  res.render("bug")
+})
+
+app.post("/render", function (req, res) {
+  template = req.body.template || "h1 No template provided"
+
+  value = pug.render(template)
+  res.render("render", { value: value })
+})
+
+
+
+
+
+
+
+
+
+
+
+
+
+app.get('/index', isLoggedIn, (req, res) => {
+	res.render("index",{title:"Home",
 	name : req.user['username']});
 	console.log(req.method,res.statusCode,req.url); // added for log
 });
@@ -154,35 +195,6 @@ app.get('/setup', async (req, res) => {
 
 
 
-
-
-
-
-// need to config some ....
-app.get('/upload', (req, res) => {
-	var directoryPath = path.join(__dirname, 'upload');
-	fs.readdir(directoryPath, function (err, files) {
-	  if (err) {
-		  return console.log('Unable to scan directory: ' + err);
-	  }
-	  res.send(files)
-	  console.log(req.method,res.statusCode,req.url); // added for log
-	  files.forEach(function (file) {
-	  console.log(req.method,res.statusCode,req.url,file); // added for log
-	  });
-	})
-  });
-
-
-
-
-
-
-
-
-
-
-
 //robots
 app.get('/robots.txt',(req,res)=>{
 	res.sendFile(path.join(__dirname, 'robots.txt'));
@@ -197,7 +209,7 @@ app.use(function(req,res){
 
 
 // Server Listening ..
-const port = 4444
+const port = 7778
 app.listen(port, () => {
 	console.log(`Listening on port ${port}`);
 });
