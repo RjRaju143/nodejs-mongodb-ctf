@@ -15,10 +15,32 @@ const fs = require('fs')
 
 const pug = require("pug")
 
+
+
+
+// mongoose.connect("mongodb://172.17.0.1:27017/LoginUsers",{
+// 	useNewUrlParser: true,
+// 	useUnifiedTopology: true
+// });
+
+
+
 mongoose.connect("mongodb://172.17.0.1:27017/LoginUsers",{
 	useNewUrlParser: true,
 	useUnifiedTopology: true
+}).then(() => {
+   console.log("Successfully connect to MongoDB.");
+}).catch(err => {
+      console.log("Connection error");
+      process.exit();
 });
+
+
+
+
+
+
+
 
 const UserSchema = new mongoose.Schema({
 	username: {
@@ -30,6 +52,9 @@ const UserSchema = new mongoose.Schema({
 		required: true
 	}
 });
+
+
+
 
 const User = mongoose.model('User', UserSchema);
 
@@ -45,7 +70,9 @@ app.use(session({
 	resave: false,
 	saveUninitialized: true
 }));
-app.use(express.urlencoded({ extended: false }));
+app.use(express.urlencoded({
+	extended: false
+}));
 app.use(express.json());
 
 // Passport.js
@@ -64,13 +91,19 @@ passport.deserializeUser(function (id, done) {
 
 
 passport.use(new localStrategy(function (username, password, done) {
-	User.findOne({ username: username }, function (err, user) {
+	User.findOne({
+		username: username
+	},function (err, user) {
 		if (err) return done(err);
-		if (!user) return done(null, false, { message: 'Incorrect username.' });
+		if (!user) return done(null, false, {
+			message: 'Incorrect username.'
+		});
 
 		bcrypt.compare(password, user.password, function (err, res) {
 			if (err) return done(err);
-			if (res === false) return done(null, false, { message: 'Incorrect password.' });
+			if (res === false) return done(null, false, {
+				message: 'Incorrect password.'
+			});
 			
 			return done(null, user);
 		});
@@ -90,15 +123,19 @@ function isLoggedOut(req, res, next) {
 
 // ROUTES
 app.get('/', isLoggedIn, (req, res) => {
-	res.render("index",{title:"Home",
-	name : req.user['username']});
+	res.render("index",{
+		title: "Home",
+		name : req.user['username']
+	});
 	console.log(req.method,res.statusCode,req.url); // added for log
 });
 
 
 app.get('/about', isLoggedIn, (req, res) => {
-	res.render("index",{title:"About",
-	name : req.user['username']});
+	res.render("index",{
+		title:"About",
+		name : req.user['username']
+	});
 	console.log(req.method,res.statusCode,req.url); // added for log
 });
 
@@ -135,8 +172,10 @@ app.get('/about', isLoggedIn, (req, res) => {
 
 
 app.get('/index', isLoggedIn, (req, res) => {
-	res.render("index",{title:"Home",
-	name : req.user['username']});
+	res.render("index",{
+		title:"Home",
+		name : req.user['username']
+	});
 	console.log(req.method,res.statusCode,req.url); // added for log
 });
 
@@ -174,7 +213,9 @@ app.get('/register', (req, res) => {
 
 // Setup our admin user
 app.get('/setup', async (req, res) => {
-	const exists = await User.exists({ username: "raju" });
+	const exists = await User.exists({
+		username: "raju"
+	});
 	if (exists) {
 		res.redirect('/login');
 		return;
