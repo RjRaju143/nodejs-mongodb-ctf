@@ -113,7 +113,7 @@ app.get('/', isLoggedIn, (req, res) => {
 		title: "Home",
 		name : req.user['username']
 	});
-	console.log(req.method,res.statusCode,req.url); // added for log
+	console.log(req.method,res.statusCode,req.url,"user :", req.user['username'], "logedin"); // added for log
 });
 
 
@@ -122,10 +122,8 @@ app.get('/about', isLoggedIn, (req, res) => {
 		title:"About",
 		name : req.user['username']
 	});
-	console.log(req.method,res.statusCode,req.url); // added for log
+	console.log(req.method,res.statusCode,req.url,"user :", req.user['username'], "logedin"); // added for log
 });
-
-
 
 
 
@@ -162,7 +160,7 @@ app.get('/index', isLoggedIn, (req, res) => {
 		title:"Home",
 		name : req.user['username']
 	});
-	console.log(req.method,res.statusCode,req.url); // added for log
+	console.log(req.method,res.statusCode,req.url,"user :", req.user['username'], "logedin"); // added for log
 });
 
 
@@ -189,11 +187,18 @@ app.get("/logout", (req, res) => {
   });
 });
 
+
+
+
+
 // need to config ....
 app.get('/register', (req, res) => {
 	res.render('register.hbs')
 	console.log(req.method,res.statusCode,req.url); // added for log
   })
+
+
+
 
 
 
