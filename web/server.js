@@ -17,14 +17,6 @@ const pug = require("pug")
 
 
 
-
-// mongoose.connect("mongodb://172.17.0.1:27017/LoginUsers",{
-// 	useNewUrlParser: true,
-// 	useUnifiedTopology: true
-// });
-
-
-
 mongoose.connect("mongodb://172.17.0.1:27017/LoginUsers",{
 	useNewUrlParser: true,
 	useUnifiedTopology: true
@@ -34,12 +26,6 @@ mongoose.connect("mongodb://172.17.0.1:27017/LoginUsers",{
       console.log("Connection error");
       process.exit();
 });
-
-
-
-
-
-
 
 
 const UserSchema = new mongoose.Schema({
