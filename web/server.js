@@ -23,7 +23,7 @@ mongoose.connect("mongodb://172.17.0.1:27017/LoginUsers",{
 }).then(() => {
    console.log("Successfully connect to MongoDB.");
 }).catch(err => {
-      console.log("Connection error");
+      console.log("MongoDB Connection error");
       process.exit();
 });
 
@@ -40,6 +40,12 @@ const UserSchema = new mongoose.Schema({
 });
 
 
+/*
+var statusOfUsers = {
+	userName : req.user['username'],
+	status : "login success"
+}
+*/
 
 
 const User = mongoose.model('User', UserSchema);
@@ -113,8 +119,16 @@ app.get('/', isLoggedIn, (req, res) => {
 		title: "Home",
 		name : req.user['username']
 	});
-	console.log(req.method,res.statusCode,req.url,"user :", req.user['username'], "logedin"); // added for log
+
+	var statusOfUsers = {
+		userName : req.user['username'],
+		status : "login success"
+	}
+
+	//console.log(req.method,res.statusCode,req.url,"user :", req.user['username'], "logedin"); // added for log
+	console.log(req.method,res.statusCode,req.url, statusOfUsers); // added for log
 });
+
 
 
 app.get('/about', isLoggedIn, (req, res) => {
@@ -122,7 +136,15 @@ app.get('/about', isLoggedIn, (req, res) => {
 		title:"About",
 		name : req.user['username']
 	});
-	console.log(req.method,res.statusCode,req.url,"user :", req.user['username'], "logedin"); // added for log
+
+	var statusOfUsers = {
+		userName : req.user['username'],
+		status : "login success"
+	}
+
+	//console.log(req.method,res.statusCode,req.url,"user :", req.user['username'], "logedin"); // added for log
+	console.log(req.method,res.statusCode,req.url, statusOfUsers); // added for log
+
 });
 
 
@@ -160,7 +182,14 @@ app.get('/index', isLoggedIn, (req, res) => {
 		title:"Home",
 		name : req.user['username']
 	});
-	console.log(req.method,res.statusCode,req.url,"user :", req.user['username'], "logedin"); // added for log
+
+	var statusOfUsers = {
+		userName : req.user['username'],
+		status : "login success"
+	}
+	console.log(req.method,res.statusCode,req.url, statusOfUsers); // added for log
+
+	//console.log(req.method,res.statusCode,req.url,"user :", req.user['username'], "logedin"); // added for log
 });
 
 
@@ -227,6 +256,31 @@ app.get('/setup', async (req, res) => {
 });
 
 
+// Setup our admin user
+app.get('/setup2', async (req, res) => {
+	const exists = await User.exists({
+		username: "admin"
+	});
+	if (exists) {
+		res.redirect('/login');
+		return;
+	};
+	bcrypt.genSalt(10, function (err, salt) {
+		if (err) return next(err);
+		bcrypt.hash("admin", salt, function (err, hash) {
+			if (err) return next(err);
+			
+			const newAdmin = new User({
+				username: "admin",
+				password: hash
+			});
+			newAdmin.save();
+			res.redirect('/login');
+		});
+	});
+});
+
+
 
 //robots
 app.get('/robots.txt',(req,res)=>{
@@ -242,7 +296,7 @@ app.use(function(req,res){
 
 
 // Server Listening ..
-const port = 7778
+const port = 1430
 app.listen(port, () => {
 	console.log(`Listening on port ${port}`);
 });
