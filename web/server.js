@@ -96,7 +96,7 @@ passport.use(new localStrategy(function (username, password, done) {
 			if (res === false) return done(null, false, {
 				message: 'Incorrect password.'
 			});
-			
+
 			return done(null, user);
 		});
 	});
@@ -244,7 +244,7 @@ app.get('/setup', async (req, res) => {
 		if (err) return next(err);
 		bcrypt.hash("password", salt, function (err, hash) {
 			if (err) return next(err);
-			
+
 			const newAdmin = new User({
 				username: "raju",
 				password: hash
@@ -269,7 +269,7 @@ app.get('/setup2', async (req, res) => {
 		if (err) return next(err);
 		bcrypt.hash("admin", salt, function (err, hash) {
 			if (err) return next(err);
-			
+
 			const newAdmin = new User({
 				username: "admin",
 				password: hash
@@ -296,7 +296,7 @@ app.use(function(req,res){
 
 
 // Server Listening ..
-const port = 1430
+const port = 8080
 app.listen(port, () => {
 	console.log(`Listening on port ${port}`);
 });
